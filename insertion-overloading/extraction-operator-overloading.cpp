@@ -5,7 +5,7 @@
 
 using namespace std;
 
-class Stduent {
+class Student {
 public:
   string name;
   int age;

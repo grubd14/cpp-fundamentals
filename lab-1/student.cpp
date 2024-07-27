@@ -16,12 +16,12 @@ public:
     cin >> student_name ;
   }
 
-  void getRoll() {
+  void setRoll() {
     cout << "Enter the roll no of student: ";
     cin >> student_roll;
   }
 
-  void getAge() {
+  void setAge() {
     cout << "Enter the age of student: ";
     cin >> student_age;
   }
@@ -47,8 +47,8 @@ public:
 int main() {
   Student s1;
   s1.setName();
-  s1.getRoll();
-  s1.getAge();
+  s1.setRoll();
+  s1.setAge();
   s1.getName();
   s1.getRoll();
   s1.getAge();

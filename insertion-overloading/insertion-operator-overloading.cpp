@@ -12,7 +12,7 @@ public:
     name = n;
     age = a;
   }
-  friend ostream& operator<<(ostream o, Student& s);
+  friend ostream& operator<<(ostream& o, Student& s);
 
 };
 
