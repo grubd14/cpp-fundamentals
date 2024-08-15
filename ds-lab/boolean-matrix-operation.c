@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 
 #define N 3  // Size of the matrix (N x N)
