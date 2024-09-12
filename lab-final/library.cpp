@@ -73,14 +73,15 @@ public:
     cout << "\t\t\t\t|  1. Borrow a Book                            |\n";
     cout << "\t\t\t\t|  2. Show Available Books                     |\n";
     cout << "\t\t\t\t|  3. View Borrowed Books                      |\n";
-    cout << "\t\t\t\t|  3. Exit Menu                                |\n";
+    cout << "\t\t\t\t|  4. Return Book                              |\n";
+    cout << "\t\t\t\t|  5. Exit Menu                                |\n";
     cout << "\t\t\t\t================================================\n";
   }
 
   void addBook() {
     string book_name;
     string book_id;
-    string status = "uborrowed";
+    string status = "[Available]";
     ofstream book_database("book-database.txt", ios::app);
 
     cin.ignore();
@@ -90,91 +91,139 @@ public:
     cout << "\t\t\t\tEnter the book name: ";
     getline(cin, book_name);
 
+    //replaces spaces between book name with underscores so, it is easier to read from it later
+    for (char &c : book_name) {
+      if (c == ' ') c = '_';
+    }
+
     book_database << book_id << " " << book_name << " " << status << endl;
     book_database.close();
     cout << "\t\t\t\tBook added successfully!\n";
   }
 
 
-//TO-D0
-//add a feature to remobe book using the book ID
 
-void removeBook() {
-  string bookIdToRemove;
-  ifstream databaseInputStream("book-database.txt");
-  ofstream databaseOutputStream("temp.txt");
+  void removeBook() {
+    string bookIdToRemove;
+    ifstream databaseInputStream("book-database.txt");
+    ofstream databaseOutputStream("temp.txt");
 
-  cin.ignore();
-  cout << "\t\t\t\tEnter the ID of the book you want to remove: ";
-  getline(cin, bookIdToRemove);
+    cin.ignore();
+    cout << "\t\t\t\tEnter the ID of the book you want to remove: ";
+    getline(cin, bookIdToRemove);
 
-  string currentLine;
-  bool bookFound = false;
+    string currentLine;
+    bool bookFound = false;
 
-  while (getline(databaseInputStream, currentLine)) {
-    istringstream iss(currentLine);
-    string currentBookId, currentBookName, currentStatus;
+    while (getline(databaseInputStream, currentLine)) {
+      istringstream iss(currentLine);
+      string currentBookId, currentBookName, currentStatus;
 
-    iss >> currentBookId >> currentBookName >> currentStatus;
+      iss >> currentBookId >> currentBookName >> currentStatus;
 
-    if (currentBookId == bookIdToRemove) {
-      bookFound = true;
-      cout << "\t\t\t\tBook removed successfully!\n";
-    } else {
-      databaseOutputStream << currentLine << endl;
-    }
-  }
-
-  if (!bookFound) {
-    cout << "\t\t\t\tBook not found!\n";
-  }
-
-  databaseInputStream.close();
-  databaseOutputStream.close();
-  remove("book-database.txt");
-  rename("temp.txt", "book-database.txt");
-}
-
-void borrowBook() {
-  string bookIdToBorrow;
-  ifstream databaseInputStream("book-database.txt");
-  ofstream databaseOutputStream("temp.txt");
-
-  cin.ignore();
-  cout << "\t\t\t\tEnter the ID of the book you want to borrow: ";
-  cin >> bookIdToBorrow;
-  string currentLine;
-  bool bookFound = false;
-
-  while (getline(databaseInputStream, currentLine)) {
-    istringstream iss(currentLine);
-    string currentBookId, currentBookName, currentStatus;
-
-    iss >> currentBookId >> currentBookName >> currentStatus;
-
-    if (currentBookId == bookIdToBorrow) {
-      if (currentStatus == "borrowed") {
-        cout << "\t\t\t\tBook is already borrowed!\n";
-        databaseOutputStream << currentLine << endl;
-      } else {
+      if (currentBookId == bookIdToRemove) {
         bookFound = true;
-        databaseOutputStream << currentBookId << " " << currentBookName << " borrowed" << endl;
-        cout << "\t\t\t\tBook borrowed successfully!\n";
+        cout << "\t\t\t\tBook removed successfully!\n";
+      } else {
+        databaseOutputStream << currentLine << endl;
       }
-    } else {
-      databaseOutputStream << currentLine << endl;
     }
+
+    if (!bookFound) {
+      cout << "\t\t\t\tBook not found!\n";
+    }
+
+    databaseInputStream.close();
+    databaseOutputStream.close();
+    remove("book-database.txt");
+    rename("temp.txt", "book-database.txt");
   }
 
-  if (!bookFound) {
-    cout << "\t\t\t\tBook not found!\n";
+  void borrowBook() {
+    string bookIdToBorrow;
+    ifstream databaseInputStream("book-database.txt");
+    ofstream databaseOutputStream("temp.txt");
+
+    cin.ignore();
+    cout << "\t\t\t\tEnter the ID of the book you want to borrow: ";
+    cin >> bookIdToBorrow;
+    string currentLine;
+    bool bookFound = false;
+
+    while (getline(databaseInputStream, currentLine)) {
+      istringstream iss(currentLine);
+      string currentBookId, currentBookName, currentStatus;
+
+      iss >> currentBookId >> currentBookName >> currentStatus;
+
+      if (currentBookId == bookIdToBorrow) {
+        if (currentStatus == "[Borrowed]") {
+          cout << "\t\t\t\tBook is already borrowed!\n";
+          databaseOutputStream << currentLine << endl;
+        } else {
+          bookFound = true;
+          databaseOutputStream << currentBookId << " " << currentBookName << " [borrowed]" << endl;
+          cout << "\t\t\t\tBook borrowed successfully!\n";
+        }
+      } else {
+        databaseOutputStream << currentLine << endl;
+      }
+    }
+
+    if (!bookFound) {
+      cout << "\t\t\t\tBook not found!\n";
+    }
+
+    databaseInputStream.close();
+    databaseOutputStream.close();
+    remove("book-database.txt");
+    rename("temp.txt", "book-database.txt");
   }
 
-  databaseInputStream.close();
-  databaseOutputStream.close();
-  remove("book-database.txt");
-  rename("temp.txt", "book-database.txt");
-}
+
+  void returnBook() {
+    string bookIdToReturn;
+    ifstream databaseInputStream("book-database.txt");
+    ofstream databaseOutputStream("temp.txt");
+
+    cin.ignore();
+    cout << "\t\t\t\tEnter the ID of the book you want to return: ";
+    getline(cin, bookIdToReturn);
+
+    string currentLine;
+    bool bookFound = false;
+
+    while (getline(databaseInputStream, currentLine)) {
+      istringstream iss(currentLine);
+      string currentBookId, currentBookName, currentStatus;
+
+      iss >> currentBookId >> currentBookName >> currentStatus;
+
+      if (currentBookId == bookIdToReturn) {
+        if (currentStatus == "[Available]") {
+          cout << "\t\t\t\tThis book wasn't borrowed!\n";
+          databaseOutputStream << currentLine << endl;
+        } else {
+          bookFound = true;
+          databaseOutputStream << currentBookId << " " << currentBookName << " [Available]" << endl;
+          cout << "\t\t\t\tBook returned successfully!\n";
+        }
+      } else {
+        databaseOutputStream << currentLine << endl;
+      }
+    }
+
+    if (!bookFound) {
+      cout << "\t\t\t\tBook not found!\n";
+    }
+
+    databaseInputStream.close();
+    databaseOutputStream.close();
+    remove("book-database.txt");
+    rename("temp.txt", "book-database.txt");
+  }
+
+
 void viewBorrowedBooks() {
   ifstream databaseInputStream("book-database.txt");
 
@@ -185,8 +234,11 @@ void viewBorrowedBooks() {
   string currentBookId, currentBookName, currentStatus;
   int count = 1;
   while (databaseInputStream >> currentBookId >> currentBookName >> currentStatus) {
-    if (currentStatus == "borrowed") {
-      cout << "\t\t\t\t" << count << ". " << currentBookName << endl;
+    if (currentStatus == "[borrowed]") {
+      for (char &c : currentBookName) {
+        if (c == '_') c = ' ';
+      }
+      cout << "\t\t\t\t" << count << ". ID: " << currentBookId << " - " << currentBookName << endl;
       count++;
     }
   }
@@ -194,16 +246,22 @@ void viewBorrowedBooks() {
   databaseInputStream.close();
 }
 
+
   void showAvailableShowBooks() {
     string listName;
     ifstream bookDatabase("book-database.txt");
     cout << "\t\t\t\t--------------------------------------------\n";
     cout << "\t\t\t\t|          Available Books List            |\n";
     cout << "\t\t\t\t--------------------------------------------\n";
-    while (!bookDatabase.eof()) {
-      getline(bookDatabase, listName);
+
+    while (getline(bookDatabase, listName)) {
+      // Replace underscores with spaces
+      for (char &c : listName) {
+        if (c == '_') c = ' ';
+      }
       cout << "\t\t\t\t* " << listName << "\n";
     }
+
     cout << "\t\t\t\t--------------------------------------------\n";
     bookDatabase.close();
   }
@@ -269,17 +327,21 @@ int main() {
               case 2:
                 library.showAvailableShowBooks();
                 break;
-                
+
               case 3:
                 library.viewBorrowedBooks();
                 break;
               case 4:
-                cout << "\t\t\t\tExiting Menu!!!";
+                library.returnBook();
                 break;
               case 5:
+                cout << "\t\t\t\tExiting Menu!!!";
+                break;
+              case 6: 
                 cout << "\t\t\t\tInvalid Choice!";
+                break;
             }
-          }  while(memberChoice != 4); 
+          }  while(memberChoice != 5); 
         } else {
           cout << "\t\t\t\tWrong username or password!!!\n";
         }
