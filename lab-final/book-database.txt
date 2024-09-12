@@ -1,8 +1,3 @@
-Is this gonna go to the database
 
-admin the great
-This is another book
-This is another another book
-This is the book name
-Again again
-Heellooooo
+22 Book borrowed
+4 Book borrowed
