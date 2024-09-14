@@ -16,6 +16,7 @@ using namespace std;
 
 class Library {
 public:
+  //varriables to store username and passwords for both admin and member
   string adminUsername;
   string memberUsername;
   string adminPass;
@@ -78,6 +79,8 @@ public:
     cout << "\t\t\t\t================================================\n";
   }
 
+  //adds book to the book-database.txt along with its ID
+  //also adds the book default status as available 
   void addBook() {
     string book_name;
     string book_id;
@@ -103,6 +106,7 @@ public:
 
 
 
+  //removes books using book ID
   void removeBook() {
     string bookIdToRemove;
     ifstream databaseInputStream("book-database.txt");
@@ -117,7 +121,9 @@ public:
 
     while (getline(databaseInputStream, currentLine)) {
       istringstream iss(currentLine);
-      string currentBookId, currentBookName, currentStatus;
+      string currentBookId;
+      string currentBookName;
+      string currentStatus;
 
       iss >> currentBookId >> currentBookName >> currentStatus;
 
@@ -139,6 +145,9 @@ public:
     rename("temp.txt", "book-database.txt");
   }
 
+  //function to borrow book using the book id
+  //check if the book is borrowed by looking for the [Borrowed] status 
+  //
   void borrowBook() {
     string bookIdToBorrow;
     ifstream databaseInputStream("book-database.txt");
@@ -162,7 +171,7 @@ public:
           databaseOutputStream << currentLine << endl;
         } else {
           bookFound = true;
-          databaseOutputStream << currentBookId << " " << currentBookName << " [borrowed]" << endl;
+          databaseOutputStream << currentBookId << " " << currentBookName << " [Borrowed]" << endl;
           cout << "\t\t\t\tBook borrowed successfully!\n";
         }
       } else {
@@ -181,14 +190,19 @@ public:
   }
 
 
+  //function to return book from the book-database.txt that are listes as borrowed
+  //asks the user for book id to return 
+  //check if the current status is borrowed than changes it to Available
   void returnBook() {
     string bookIdToReturn;
     ifstream databaseInputStream("book-database.txt");
     ofstream databaseOutputStream("temp.txt");
 
+    //cin.ignore() is ignoring the one character, here it is ignoring new line (\n)
     cin.ignore();
     cout << "\t\t\t\tEnter the ID of the book you want to return: ";
     getline(cin, bookIdToReturn);
+    //getline takes all the input a single line
 
     string currentLine;
     bool bookFound = false;
@@ -224,6 +238,8 @@ public:
   }
 
 
+  //function to view borrowed book
+  //while loops through the every line at book-database.txt till it finds currentStatus as "Borrowed"
 void viewBorrowedBooks() {
   ifstream databaseInputStream("book-database.txt");
 
@@ -234,10 +250,15 @@ void viewBorrowedBooks() {
   string currentBookId, currentBookName, currentStatus;
   int count = 1;
   while (databaseInputStream >> currentBookId >> currentBookName >> currentStatus) {
-    if (currentStatus == "[borrowed]") {
+    if (currentStatus == "[Borrowed]") {
+
+      //&c is refrence to each character in the currentBookName
+      //if statement checks if the current character is true and is true than replaces with underscore
+      
       for (char &c : currentBookName) {
         if (c == '_') c = ' ';
       }
+      //this is just for numbering borrowed books
       cout << "\t\t\t\t" << count << ". ID: " << currentBookId << " - " << currentBookName << endl;
       count++;
     }
@@ -247,15 +268,16 @@ void viewBorrowedBooks() {
 }
 
 
+  //shows available books 
+  //
   void showAvailableShowBooks() {
     string listName;
     ifstream bookDatabase("book-database.txt");
     cout << "\t\t\t\t--------------------------------------------\n";
     cout << "\t\t\t\t|          Available Books List            |\n";
-    cout << "\t\t\t\t--------------------------------------------\n";
 
     while (getline(bookDatabase, listName)) {
-      // Replace underscores with spaces
+      //for each character in the listName it looks for spaces and when there is a space it replaces with underscore 
       for (char &c : listName) {
         if (c == '_') c = ' ';
       }
@@ -268,6 +290,9 @@ void viewBorrowedBooks() {
 };
 
 int main() {
+  //total of three types of menus are called in the int main() 
+  //usign dot notation, most of them are put in do while loop
+  //switch case to run, different function according to user choice
   Library library;
   int choice;
 
