@@ -1,9 +1,8 @@
 /*
 A program for library management
 --features--
-add, remove and search for books
-keep track of borrowers and duet dates
-implement a system for calculating fines
+add, remove books
+keep track of book borrowed
 */
 
 
@@ -11,6 +10,7 @@ implement a system for calculating fines
 #include <fstream>
 #include <string>
 #include <sstream>
+//sstream -> isstringstream
 
 using namespace std;
 
@@ -85,8 +85,12 @@ public:
     string book_name;
     string book_id;
     string status = "[Available]";
+    //output stream class to write on file
     ofstream book_database("book-database.txt", ios::app);
 
+
+    //cin.ignore() is ignoring the one character, here it is ignoring new line (\n)
+    //in previous operations, there is a new character left, so it ignores that and makes sure that it doesn't interfer
     cin.ignore();
     cout << "\t\t\t\tEnter the book id: ";
     getline(cin, book_id);
@@ -99,6 +103,8 @@ public:
       if (c == ' ') c = '_';
     }
 
+    //<< -> insertion operator 
+    //>> -> extraction operator 
     book_database << book_id << " " << book_name << " " << status << endl;
     book_database.close();
     cout << "\t\t\t\tBook added successfully!\n";
@@ -112,6 +118,9 @@ public:
     ifstream databaseInputStream("book-database.txt");
     ofstream databaseOutputStream("temp.txt");
 
+
+    //cin.ignore() is ignoring the one character, here it is ignoring new line (\n)
+    //cin.ignore() ensures that leftovers character like \n don't interfere with the cin or getline()
     cin.ignore();
     cout << "\t\t\t\tEnter the ID of the book you want to remove: ";
     getline(cin, bookIdToRemove);
@@ -119,13 +128,18 @@ public:
     string currentLine;
     bool bookFound = false;
 
+    //reads one line from the file and stores it in currentLine
     while (getline(databaseInputStream, currentLine)) {
+      //here isstringstream is used to split and extract individual components 
+      //like book id, book name, status 
       istringstream iss(currentLine);
       string currentBookId;
       string currentBookName;
       string currentStatus;
 
       iss >> currentBookId >> currentBookName >> currentStatus;
+      //iss splits currentLine string into components   using extraction operator
+      //takes the space separated parts in and puts it in currentBookId, currentBookName, and  currentStatus
 
       if (currentBookId == bookIdToRemove) {
         bookFound = true;
@@ -153,12 +167,15 @@ public:
     ifstream databaseInputStream("book-database.txt");
     ofstream databaseOutputStream("temp.txt");
 
+
+    //cin.ignore() is ignoring the one leftover character, here it is ignoring new line (\n)
     cin.ignore();
     cout << "\t\t\t\tEnter the ID of the book you want to borrow: ";
     cin >> bookIdToBorrow;
     string currentLine;
     bool bookFound = false;
 
+    //while loop continues until all the line from the files are read
     while (getline(databaseInputStream, currentLine)) {
       istringstream iss(currentLine);
       string currentBookId, currentBookName, currentStatus;
@@ -288,6 +305,7 @@ void viewBorrowedBooks() {
     bookDatabase.close();
   }
 };
+
 
 int main() {
   //total of three types of menus are called in the int main() 
